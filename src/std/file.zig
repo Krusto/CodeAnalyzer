@@ -6,11 +6,7 @@ pub const FileData = struct {
     lines: std.ArrayList(stdtypes.String),
     offset: usize,
     pub fn init(code: stdtypes.String, lines: std.ArrayList(stdtypes.String)) FileData {
-        return FileData{
-            .code = code,
-            .lines = lines,
-            .offset = 0
-        };
+        return FileData{ .code = code, .lines = lines, .offset = 0 };
     }
     pub fn deinit(self: @This()) void {
         for (self.lines.items) |line| {
@@ -22,8 +18,8 @@ pub const FileData = struct {
     pub fn current(self: *@This()) u8 {
         return self.code.slice[self.offset];
     }
-    pub fn getRange(self:*const @This(),length:usize) stdtypes.StringUnmanaged {
-        return stdtypes.StringUnmanaged.init(self.code.slice[self.offset..(self.offset+length)]);
+    pub fn getRange(self: *const @This(), length: usize) stdtypes.StringUnmanaged {
+        return stdtypes.StringUnmanaged.init(self.code.slice[self.offset..(self.offset + length)]);
     }
 };
 pub fn read_file(allocator: std.mem.Allocator, relative_path: []const u8) !FileData {
@@ -34,7 +30,7 @@ pub fn read_file(allocator: std.mem.Allocator, relative_path: []const u8) !FileD
 
     std.log.info("Trying to read: {s}", .{relative_path});
     var file = working_dir.openFile(relative_path, .{}) catch |err|
-    {
+        {
         return err;
     };
 
