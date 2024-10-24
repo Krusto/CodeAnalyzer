@@ -19,11 +19,11 @@ pub const FileData = struct {
         defer self.code.deinit();
         defer self.lines.deinit();
     }
-    pub fn current(self: @This()) u8 {
+    pub fn current(self: *@This()) u8 {
         return self.code.slice[self.offset];
     }
-    pub fn currentRange(self: @This(),length:usize)[] const u8{
-        return self.code.slice[self.offset..(self.offset+length)];
+    pub fn getRange(self:*const @This(),length:usize) stdtypes.StringUnmanaged {
+        return stdtypes.StringUnmanaged.init(self.code.slice[self.offset..(self.offset+length)]);
     }
 };
 pub fn read_file(allocator: std.mem.Allocator, relative_path: []const u8) !FileData {
@@ -33,7 +33,11 @@ pub fn read_file(allocator: std.mem.Allocator, relative_path: []const u8) !FileD
     defer allocator.free(working_dir_str);
 
     std.log.info("Trying to read: {s}", .{relative_path});
-    var file = try working_dir.openFile(relative_path, .{});
+    var file = working_dir.openFile(relative_path, .{}) catch |err|
+    {
+        return err;
+    };
+
     const file_stat = (try file.stat());
 
     std.log.info("File Size: {d}", .{file_stat.size});

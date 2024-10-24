@@ -36,20 +36,3 @@ pub fn findInArray(arr:[]const u8,value:u8) bool
     }
     return false;
 }
-pub fn getToken(str:[]const u8,offset:usize) []const u8
-{
-    var len:usize = 0;
-    var current : u8 = 0;
-
-    const non_literals = [_]u8{' ',';','}','{','(',')','.',',','\n','\r'};
-    while(findInArray(&non_literals, current) == false)
-    {
-        if(offset + len >= str.len)
-            break;
-        current = str[offset + len];
-        len += 1;
-    }
-    if(len > 1)
-        len-=1;
-    return str[offset..offset+len];
-}
